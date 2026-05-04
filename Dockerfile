@@ -13,4 +13,4 @@ COPY . .
 EXPOSE 7860
 
 # Запускаем Gradio-интерфейс вместо FastAPI
-CMD ["python", "test_gigachat.py"]
+CMD ["python", "app.py"]
