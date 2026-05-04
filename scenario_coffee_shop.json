@@ -1,0 +1,363 @@
+{
+  "name": "PRO Кофе: Путь к Свободе",
+  "description": "Симулятор открытия кофейни от идеи до выхода на стабильную прибыль. Основан на опыте Baggins Coffee, Skuratov, Cofix, DoubleB и историях провалов новичков.",
+  "budget": 5000000,
+  "initial_cash": 5000000,
+  "phases": {
+    "concept": {
+      "name": "Определение концепции",
+      "description": "С чего начнём? Это решение определит всё — от бюджета до локации. Помните: резервный фонд (300–500 тыс. руб.) — это не роскошь, а подушка безопасности на первые убыточные месяцы.",
+      "typical_mistakes": [
+        "Отсутствие детального финплана в Excel. Игрок не заложил резервный фонд.",
+        "Игнорирование резервного фонда (300–500 тыс. руб. на первые месяцы работы в минус)."
+      ],
+      "steps": [
+        {
+          "id": "concept_togo",
+          "label": "Кофе с собой (To Go)",
+          "description": "Формат кофе-точки или окна выдачи. Минимум места, работа на потоке. Вы экономите на аренде, дизайне и персонале. Бюджет: 250–500 тыс. руб.",
+          "costs": { "cash": -350000 },
+          "effects": { "traffic_dependency": 0.9, "brand_awareness": -5, "loyalty_potential": -10, "max_monthly_revenue": 400000, "staff_skill_requirement": 0.3, "equipment_requirement": 0.4 },
+          "risks": { "weather_dependency": 0.4, "no_seating_loss": 0.3 }
+        },
+        {
+          "id": "concept_classic",
+          "label": "Классическая кофейня (с посадкой)",
+          "description": "Полноценное заведение на 15–25 мест с дизайном, мебелью и мощной вентиляцией. Бюджет: 3–5 млн руб. Требует серьёзных вложений и большего штата.",
+          "costs": { "cash": -4000000 },
+          "effects": { "traffic_dependency": 0.4, "brand_awareness": 15, "loyalty_potential": 20, "max_monthly_revenue": 1200000, "staff_skill_requirement": 0.7, "equipment_requirement": 0.8 },
+          "risks": { "empty_seats_cost": 0.5, "high_fixed_costs": 0.6 }
+        },
+        {
+          "id": "concept_franchise",
+          "label": "Покупка франшизы",
+          "description": "Паушальный взнос + инвестиции. Готовый брендбук, поддержка в обучении, поиске локации и поставках. Бюджет: 800 тыс. (взнос) + 3 млн (инвестиции).",
+          "costs": { "cash": -3800000, "monthly_royalty": 50000 },
+          "effects": { "traffic_dependency": 0.3, "brand_awareness": 25, "loyalty_potential": 15, "max_monthly_revenue": 900000, "staff_skill_requirement": 0.5, "equipment_requirement": 0.6 },
+          "risks": { "franchise_conflict": 0.15, "royalty_pressure": 0.4 }
+        }
+      ],
+      "next_phase": "legal"
+    },
+    "legal": {
+      "name": "Юридическое оформление и поиск денег",
+      "description": "Как оформим бизнес и откуда возьмём деньги? Помните: страховые взносы ИП (40–50 тыс. руб. в год) начинают капать сразу после регистрации.",
+      "typical_mistakes": [
+        "Регистрация ИП слишком рано (до поиска помещения), из-за чего налоги и взносы съедают бюджет ещё до открытия.",
+        "Отсутствие договора с партнёром при открытии в складчину."
+      ],
+      "steps": [
+        {
+          "id": "legal_own",
+          "label": "Свои накопления",
+          "description": "Медленный старт, но вы никому не должны и полностью контролируете процесс. Минус — ограниченность бюджета.",
+          "costs": { "cash": -30000, "monthly_legal": 5000 },
+          "effects": { "stress_resistance": 10, "freedom_of_decision": 15 },
+          "risks": { "no_safety_net": 0.6 }
+        },
+        {
+          "id": "legal_credit",
+          "label": "Кредит или заём",
+          "description": "Быстрый старт, но высокое давление процентов (особенно при текущих ставках). Ежемесячные платежи будут давить на психику и бюджет.",
+          "costs": { "cash": 0, "monthly_debt": 80000 },
+          "effects": { "stress_resistance": -15, "freedom_of_decision": -10, "extra_cash_injection": 1000000 },
+          "risks": { "debt_trap": 0.7, "rushed_decisions": 0.5 }
+        },
+        {
+          "id": "legal_partner",
+          "label": "Партнерство (в складчину)",
+          "description": "Разделите риски и бюджет с партнёром. Но помните: конфликты при распределении обязанностей и прибыли — классика жанра.",
+          "costs": { "cash": -50000, "monthly_legal": 10000 },
+          "effects": { "stress_resistance": 5, "freedom_of_decision": -5, "extra_cash_injection": 1500000 },
+          "risks": { "partner_conflict": 0.5, "profit_split_dispute": 0.4 }
+        }
+      ],
+      "next_phase": "location"
+    },
+    "location": {
+      "name": "Выбор локации",
+      "description": "До 70% успеха зависит от места. Локацию нужно выбирать «ногами» — считать людей в разное время дня и следить за направлением движения. Оценивайте не только количество, но и качество потока.",
+      "typical_mistakes": [
+        "Оценка только «количества» людей без учёта «качества» (целевой аудитории) и направления трафика.",
+        "Выбор места с низкой проходимостью «потому что дёшево»."
+      ],
+      "steps": [
+        {
+          "id": "location_traffic",
+          "label": "Трафиковое место (метро/центр)",
+          "description": "Аренда 150–300 тыс. руб./мес. Огромный поток, но высокая конкуренция и дорогая аренда требуют безупречного продукта и скорости.",
+          "costs": { "cash": -600000, "monthly_rent": 225000, "monthly_utilities": 20000 },
+          "effects": { "traffic": 120, "brand_awareness": 10, "competition_level": 0.8, "rent_to_revenue_ratio": 0.35 },
+          "risks": { "high_competitor_pressure": 0.6, "rent_hike": 0.3 }
+        },
+        {
+          "id": "location_residential",
+          "label": "Спальный район",
+          "description": "Аренда 25–60 тыс. руб./мес. Работа на постоянных гостей (жители ЖК, мамы с колясками). Меньше трафика, но выше лояльность и ниже конкуренция.",
+          "costs": { "cash": -200000, "monthly_rent": 42500, "monthly_utilities": 8000 },
+          "effects": { "traffic": 50, "loyalty": 15, "competition_level": 0.3, "rent_to_revenue_ratio": 0.15 },
+          "risks": { "low_weekends": 0.4, "limited_growth": 0.3 }
+        },
+        {
+          "id": "location_subrent",
+          "label": "Субаренда (уголок в БЦ или магазине)",
+          "description": "Аренда 10–50 тыс. руб./мес. Низкий порог входа, но нет уверенности в завтрашнем дне — вас могут выселить в любой момент.",
+          "costs": { "cash": -100000, "monthly_rent": 30000, "monthly_utilities": 5000 },
+          "effects": { "traffic": 40, "competition_level": 0.5, "rent_to_revenue_ratio": 0.1 },
+          "risks": { "sudden_eviction": 0.4, "no_visibility": 0.7 }
+        }
+      ],
+      "next_phase": "renovation"
+    },
+    "renovation": {
+      "name": "Ремонт и оборудование",
+      "description": "Сердце вашей кофейни — техника и инженерия. Бытовая техника не выдерживает нагрузок кофейни. Экономия на вентиляции приводит к выбиванию пробок при включении чайника.",
+      "typical_mistakes": [
+        "Экономия на вентиляции и мощности электросети (вырубает щиток при включении чайника).",
+        "Покупка бытовой техники вместо профессиональной — она не тянет нагрузку."
+      ],
+      "steps": [
+        {
+          "id": "reno_rent_equipment",
+          "label": "Аренда оборудования",
+          "description": "Платите 8–15 тыс. руб./мес. Минимум вложений сейчас, но риск поломок и «привязка» к поставщику зерна. Вы не владеете техникой.",
+          "costs": { "cash": -50000, "monthly_equipment_rent": 12000 },
+          "effects": { "equipment_condition": 0.6, "equipment_ownership": 0.0, "supplier_lock_in": 0.8 },
+          "risks": { "equipment_breakdown": 0.5, "supplier_force_majeure": 0.3 }
+        },
+        {
+          "id": "reno_buy_used",
+          "label": "Покупка б/у техники",
+          "description": "Экономия сейчас (50–100 тыс. руб.), но через 2 месяца начнутся поломки. Вы рискуете в самый неподходящий момент встать без кофемашины.",
+          "costs": { "cash": -75000 },
+          "effects": { "equipment_condition": 0.3, "equipment_ownership": 0.5, "supplier_lock_in": 0.3 },
+          "risks": { "critical_breakdown": 0.7, "repair_costs_spike": 0.6 }
+        },
+        {
+          "id": "reno_buy_new_pro",
+          "label": "Лизинг/Покупка профтехники",
+          "description": "Новая профессиональная кофемашина и кофемолка за 400–800 тыс. руб. Стабильный вкус и надежность. Окупается за счёт отсутствия простоев.",
+          "costs": { "cash": -600000, "monthly_equipment_lease": 15000 },
+          "effects": { "equipment_condition": 1.0, "equipment_ownership": 1.0, "supplier_lock_in": 0.1, "avg_check_bonus": 30, "staff_skill": 0.1 },
+          "risks": { "lease_payment_pressure": 0.4 }
+        },
+        {
+          "id": "reno_minimal",
+          "label": "Минимальный ремонт",
+          "description": "Косметика и санитарный минимум. 30–50 тыс. руб. Быстро, дёшево, но не создаёт атмосферы.",
+          "costs": { "cash": -40000 },
+          "effects": { "interior_quality": 0.3, "brand_awareness": -5 },
+          "risks": { "unpleasant_atmosphere": 0.6 }
+        },
+        {
+          "id": "reno_designer",
+          "label": "Дизайнерский ремонт",
+          "description": "Вложения 150–300 тыс. руб. Интерьер становится фишкой для Instagram и привлекает гостей, которые любят фотографироваться.",
+          "costs": { "cash": -225000 },
+          "effects": { "interior_quality": 0.9, "brand_awareness": 15, "loyalty": 10, "avg_check_bonus": 20 },
+          "risks": { "overbudget_renovation": 0.3 }
+        }
+      ],
+      "next_phase": "menu"
+    },
+    "menu": {
+      "name": "Продукт и меню",
+      "description": "Кофе — это база вашего бизнеса. Себестоимость чашки 30–40 руб. при цене 150–250 руб. Но глубина чека и возвращаемость гостей часто зависят от еды. Помните про утайку и списания.",
+      "typical_mistakes": [
+        "Расчёт себестоимости «на глаз» без учёта отходов (например, кожуры авокадо).",
+        "Отсутствие еды в меню — снижает возвращаемость гостей."
+      ],
+      "steps": [
+        {
+          "id": "menu_coffee_only",
+          "label": "Только кофе",
+          "description": "Минимальные риски по списаниям. Вы фокусируетесь на качестве зерна. Но средний чек ограничен 150–250 руб.",
+          "costs": { "cash": -50000, "monthly_inventory": 30000 },
+          "effects": { "avg_check_bonus": 0, "food_waste_risk": 0.0, "guest_return_rate": 0.4 },
+          "risks": { "low_ticket_depth": 0.5 }
+        },
+        {
+          "id": "menu_coffee_desserts",
+          "label": "Кофе + десерты/выпечка",
+          "description": "Закупка у поставщиков или локальных кондитеров. Увеличивает средний чек на 50–100 руб., но высок риск списаний непроданного.",
+          "costs": { "cash": -80000, "monthly_inventory": 60000 },
+          "effects": { "avg_check_bonus": 50, "food_waste_risk": 0.4, "guest_return_rate": 0.6 },
+          "risks": { "spoilage_losses": 0.4, "supplier_inconsistency": 0.3 }
+        },
+        {
+          "id": "menu_full_kitchen",
+          "label": "Полноценная кухня (сэндвичи, завтраки)",
+          "description": "Требует повара и оборудование (плита, вытяжка над ней). Максимальный средний чек, но сложнее процессы и больше персонала.",
+          "costs": { "cash": -150000, "monthly_inventory": 100000, "monthly_salary_extra": 50000 },
+          "effects": { "avg_check_bonus": 120, "food_waste_risk": 0.6, "guest_return_rate": 0.8 },
+          "risks": { "kitchen_bottleneck": 0.5, "spoilage_losses": 0.5 }
+        }
+      ],
+      "next_phase": "staff"
+    },
+    "staff": {
+      "name": "Найм и обучение персонала",
+      "description": "Бариста — лицо бизнеса. Люди приходят к людям. Правило: нанимайте за отношение, обучайте мастерству. Помните о субординации и системе мотивации.",
+      "typical_mistakes": [
+        "Попытка «дружить» с персоналом вместо выстраивания субординации (приводит к хамству и воровству).",
+        "Отсутствие обучения и стандартов качества."
+      ],
+      "steps": [
+        {
+          "id": "staff_self",
+          "label": "Работать самому",
+          "description": "0 руб. на старте. Идеальное качество и контроль, но путь к выгоранию за 6–12 месяцев. Вы не масштабируете бизнес, а создаёте себе работу.",
+          "costs": { "cash": 0, "monthly_salary": 0 },
+          "effects": { "staff_skill": 0.9, "staff_morale": 1.0, "staff_count": 0, "owner_burnout_rate": 0.8, "quality_control": 0.95 },
+          "risks": { "founder_burnout": 0.9, "no_scalability": 0.8 }
+        },
+        {
+          "id": "staff_students",
+          "label": "Найм студентов (почасовая оплата)",
+          "description": "Ставка 200–300 руб./час. Дёшево, но высокая текучка. Студенты могут не выйти в смену перед экзаменом.",
+          "costs": { "cash": -20000, "monthly_salary": 60000 },
+          "effects": { "staff_skill": 0.3, "staff_morale": 0.5, "staff_count": 2, "owner_burnout_rate": 0.3, "quality_control": 0.4 },
+          "risks": { "no_show_risk": 0.5, "high_turnover": 0.6 }
+        },
+        {
+          "id": "staff_pro",
+          "label": "Профессионалы с мотивацией (KPI)",
+          "description": "Ставка + премии за отзывы, чистоту и продажи. Требует вложений в обучение, но окупается возвратными гостями.",
+          "costs": { "cash": -40000, "monthly_salary": 100000 },
+          "effects": { "staff_skill": 0.8, "staff_morale": 0.8, "staff_count": 2, "owner_burnout_rate": 0.2, "quality_control": 0.8, "loyalty": 10 },
+          "risks": { "kpi_gaming": 0.2, "high_payroll": 0.3 }
+        }
+      ],
+      "next_phase": "marketing"
+    },
+    "marketing": {
+      "name": "Маркетинг и запуск",
+      "description": "О вас никто не знает. Как заявите о себе? На открытие и первый маркетинг закладывайте 100–300 тыс. руб. Лучший метод — прогрев аудитории за 3–4 месяца до открытия.",
+      "typical_mistakes": [
+        "Отсутствие вывески или её плохая видимость (люди проходят мимо).",
+        "Трата всего бюджета на открытие без прогрева аудитории заранее."
+      ],
+      "steps": [
+        {
+          "id": "marketing_passive",
+          "label": "Пассивное открытие",
+          "description": "Просто открыть дверь и ждать. Бесплатно, но очень медленно. Первые клиенты могут не прийти вовсе, если место не трафиковое.",
+          "costs": { "cash": 0 },
+          "effects": { "initial_customer_surge": 10, "brand_awareness": 0 },
+          "risks": { "no_one_comes": 0.5, "slow_start": 0.8 }
+        },
+        {
+          "id": "marketing_local",
+          "label": "Локальный маркетинг",
+          "description": "Яркая вывеска, листовки, шарики на входе, акция «кофе за любую цену» в день открытия. Бюджет: 100–150 тыс. руб.",
+          "costs": { "cash": -125000 },
+          "effects": { "initial_customer_surge": 60, "brand_awareness": 10 },
+          "risks": { "one_time_effect": 0.4 }
+        },
+        {
+          "id": "marketing_social",
+          "label": "Бизнес-реалити в соцсетях",
+          "description": "Запуск блога/канала за 3–4 месяца до открытия. Показываете ремонт, выбор зерна, лица команды. Самый эффективный метод — люди приходят уже лояльными.",
+          "costs": { "cash": -200000 },
+          "effects": { "initial_customer_surge": 100, "brand_awareness": 25, "loyalty": 15 },
+          "risks": { "content_creation_burden": 0.3 }
+        }
+      ],
+      "next_phase": "operations"
+    },
+    "operations": {
+      "name": "Первые месяцы и операционка",
+      "description": "Период «кассовых разрывов». 100–120 чеков в день — хороший показатель. Время ожидания — не более 4–5 минут. Главное правило: не тратить выручку на личные нужды до оплаты аренды и налогов.",
+      "typical_mistakes": [
+        "Трата выручки на личные нужды до оплаты аренды и налогов (приводит к кассовому разрыву).",
+        "Ручное управление без CRM-системы — невозможно увидеть реальную прибыль."
+      ],
+      "steps": [
+        {
+          "id": "ops_manual",
+          "label": "Ручное управление",
+          "description": "Личный контроль каждой закупки и смены. Вы видите всё своими глазами, но это отнимает 14 часов в день и не масштабируется.",
+          "costs": { "cash": 0, "monthly_ops_cost": 5000 },
+          "effects": { "quality_control": 0.9, "owner_burnout_rate": 0.7, "theft_risk": 0.2 },
+          "risks": { "owner_overwhelm": 0.8 }
+        },
+        {
+          "id": "ops_crm",
+          "label": "Внедрение CRM и учёта",
+          "description": "Система учёта каждой чашки, списаний и остатков. Позволяет видеть реальную прибыль и предотвращать воровство. Минус — требует времени на обучение.",
+          "costs": { "cash": -50000, "monthly_ops_cost": 15000 },
+          "effects": { "quality_control": 0.7, "owner_burnout_rate": 0.4, "theft_risk": 0.05, "avg_check_bonus": 10 },
+          "risks": { "system_learning_curve": 0.3 }
+        }
+      ],
+      "next_phase": "analysis"
+    },
+    "analysis": {
+      "name": "Анализ и масштабирование",
+      "description": "Цель — выход на прибыль 150–400 тыс. руб./мес. Бизнес без роста съедается инфляцией. Решите: оптимизировать, масштабироваться или выходить из операционки?",
+      "typical_mistakes": [
+        "Остановка в развитии после выхода в «ноль» — бизнес съедается инфляцией.",
+        "Попытка масштабирования без отлаженных процессов первой точки."
+      ],
+      "steps": [
+        {
+          "id": "analysis_optimize",
+          "label": "Оптимизация текущей точки",
+          "description": "Работа над фудкостом, замена поставщиков, ввод новых позиций. Повышает прибыль без роста расходов.",
+          "costs": { "cash": -30000 },
+          "effects": { "monthly_profit_boost": 0.15, "operational_efficiency": 0.2 },
+          "risks": { "diminishing_returns": 0.3 }
+        },
+        {
+          "id": "analysis_scale",
+          "label": "Открытие второй точки",
+          "description": "Геморроя столько же, а прибыли больше. Но требует отлаженных процессов и управляющего на первой точке.",
+          "costs": { "cash": -2000000 },
+          "effects": { "total_monthly_revenue_multiplier": 1.7, "stress_resistance": -10 },
+          "risks": { "overstretch": 0.5, "quality_dilution": 0.4 }
+        },
+        {
+          "id": "analysis_automate",
+          "label": "Найм управляющего и выход из операционки",
+          "description": "Вы перестаёте стоять за стойкой и начинаете строить сеть. Прибыль упадёт на зарплату управляющего, но освободится ваше время.",
+          "costs": { "cash": -50000, "monthly_salary_extra": 80000 },
+          "effects": { "owner_burnout_rate": -0.5, "business_value": 10, "monthly_profit_boost": -0.1 },
+          "risks": { "manager_fit_risk": 0.4 }
+        }
+      ],
+      "next_phase": "end"
+    }
+  },
+  "causal_links": [
+    {
+      "from_phase": "concept",
+      "from_action": "concept_togo",
+      "to_phase": "location",
+      "effect": "Формат To Go требует максимально трафикового места. Спальный район для него — провал."
+    },
+    {
+      "from_phase": "location",
+      "from_action": "location_subrent",
+      "to_phase": "operations",
+      "effect": "Субаренда в Фазе 8 создаёт риск внезапного выселения и остановки бизнеса."
+    },
+    {
+      "from_phase": "renovation",
+      "from_action": "reno_buy_used",
+      "to_phase": "operations",
+      "effect": "Б/у техника в Фазе 4 с вероятностью 70% сломается в Фазе 8, остановив продажи."
+    },
+    {
+      "from_phase": "staff",
+      "from_action": "staff_students",
+      "to_phase": "operations",
+      "effect": "Студенты в Фазе 6 приведут к низкому качеству и оттоку гостей в Фазе 8."
+    },
+    {
+      "from_phase": "marketing",
+      "from_action": "marketing_passive",
+      "to_phase": "operations",
+      "effect": "Без маркетинга в Фазе 7 даже отличная локация не даст нужного потока в Фазе 8."
+    }
+  ]
+}
