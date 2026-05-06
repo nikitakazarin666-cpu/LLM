@@ -1,167 +1,68 @@
-"""Веб-интерфейс для симулятора кофейни на Gradio."""
+"""FastAPI-сервер для чат-симулятора кофейни."""
 
-import gradio as gr
-from env import BusinessSimulator
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel
 from mentor import get_mentor_advice
+from env import BusinessSimulator
+import os
 
-# Создаём симулятор
+app = FastAPI(title="PRO Кофе: Чат с Ментором")
+
 sim = BusinessSimulator(scenario_file="scenario_coffee_shop.json", seed=42)
+sessions = {}
 
-def start_game():
-    """Начать новую игру."""
-    state = sim.reset()
-    phase = sim.get_current_phase()
-    actions = sim.get_available_actions()
-    
-    status_text = f"💰 Бюджет: {state.cash:,.0f} ₽\n"
-    status_text += f"📅 Месяц: {state.month}\n"
-    status_text += f"📊 Фаза: {phase['name']}\n\n"
-    status_text += f"📝 {phase['description']}"
-    
-    # Создаём кнопки для действий
-    buttons = []
-    labels = []
-    for action in actions:
-        labels.append(f"{action['label']} — {action['description'][:80]}...")
-    
-    return status_text, gr.update(choices=labels, value=None)
+class ChatRequest(BaseModel):
+    message: str
+    session_id: str = "default"
 
-def make_choice(choice_text):
-    """Обработка выбора пользователя."""
-    if not choice_text:
-        return "Пожалуйста, выберите действие.", gr.update(), ""
+@app.get("/", response_class=HTMLResponse)
+async def root():
+    with open("chat.html", "r", encoding="utf-8") as f:
+        return f.read()
 
-def ask_mentor():
-    """Получает совет от ИИ-Ментора на основе текущего состояния."""
-    state = sim.state()
-    phase = sim.get_current_phase()
-    actions = sim.get_available_actions()
-
-    if not actions:
-        return "Ментор: Все важные решения в этой фазе уже приняты. Двигаемся дальше!"
-
-    # Вызываем наш модуль mentor.py
-    advice = get_mentor_advice(
-        state.model_dump(),
-        phase['name'],
-        actions
-    )
-
-    return f"🧙‍♂️ **Ментор:** {advice}"
+@app.post("/chat")
+async def chat(request: ChatRequest):
+    session_id = request.session_id
+    user_message = request.message.strip()
     
-    phase = sim.get_current_phase()
-    actions = sim.get_available_actions()
+    if session_id not in sessions:
+        sessions[session_id] = {"state": "greeting", "name": None, "budget": None}
     
-    # Находим ID действия по тексту
-    action_id = None
-    for action in actions:
-        if action['label'] in choice_text:
-            action_id = action['id']
-            break
+    session = sessions[session_id]
     
-    if not action_id:
-        return "Ошибка: действие не найдено.", gr.update(), ""
+    # Логика чата — те же этапы, что были в Gradio
+    if session["state"] == "greeting" and not session["name"]:
+        session["name"] = user_message
+        session["state"] = "budget"
+        return JSONResponse({"response": f"Отлично, {user_message}! 😊 Теперь давай перейдём к делу. Каким бюджетом ты располагаешь?\n1. 💰 Свои накопления — 500 000 руб.\n2. 🤝 Инвестор — 1 500 000 руб.\n3. 🏦 Кредит — 3 000 000 руб.\nНапиши 1, 2 или 3."})
     
-    # Выполняем шаг
-    result = sim.step(action_id)
-    
-    if "error" in result:
-        return f"❌ {result['error']}", gr.update(), ""
-    
-    state = sim.state()
-    
-    # Формируем отчёт
-    report = f"### Вы выбрали: {choice_text}\n\n"
-    report += f"**Эффект:** {result['info'].get('description', '')}\n\n"
-    
-    # Риски
-    if result['info'].get('risks_triggered'):
-        report += f"⚠️ **{result['info']['risks_triggered']}**\n\n"
-    
-    # Состояние
-    report += f"💰 **Остаток:** {state.cash:,.0f} ₽\n"
-    report += f"📅 **Месяц:** {state.month}\n"
-    
-    # Проверка на завершение
-    if result['done']:
-        if result.get('done_reason') == 'bankrupt':
-            report += "\n## 💀 ВЫ БАНКРОТ!\nУ вас закончились деньги. Попробуйте ещё раз с другими решениями."
-        elif result.get('done_reason') == 'success':
-            report += "\n## 🎉 ПОЗДРАВЛЯЕМ!\nВаша кофейня успешна и приносит прибыль!"
-        
-        return report, gr.update(choices=[], value=None), ""
-    
-    # Следующая фаза
-    if state.is_open:
-        # Операционная деятельность
-        report += f"\n### ☕ Кофейня открыта!\n"
-        report += f"👥 Посетителей в день: **{state.daily_customers}**\n"
-        report += f"💵 Средний чек: **{state.avg_check:,.0f} ₽**\n"
-        report += f"📈 Выручка за месяц: **{state.monthly_revenue:,.0f} ₽**\n"
-        report += f"📉 Расходы за месяц: **{state.monthly_rent + state.monthly_salary + state.monthly_utilities:,.0f} ₽**\n"
-        profit = state.monthly_profit
-        if profit > 0:
-            report += f"✅ Чистая прибыль: **{profit:,.0f} ₽**"
+    elif session["state"] == "budget":
+        # Используем GigaChat для анализа выбора бюджета
+        sim.reset()
+        if "1" in user_message or "накопления" in user_message.lower():
+            sim.current_state.cash = 500000
+            response = "Ты выбрал накопления — 500 000 руб. 💪 Оптимальный формат: Кофе с собой (To Go). Согласен?"
+        elif "2" in user_message or "инвестор" in user_message.lower():
+            sim.current_state.cash = 1500000
+            response = "Ты выбрал инвестора — 1 500 000 руб. Я стану твоим партнёром. 🤝 Можешь открыть мини-кофейню."
+        elif "3" in user_message or "кредит" in user_message.lower():
+            sim.current_state.cash = 3000000
+            response = "Ты взял кредит — 3 000 000 руб. ⚠️ Помни о платежах 80 000 руб./мес."
         else:
-            report += f"🔴 Убыток: **{profit:,.0f} ₽**"
+            response = "Пожалуйста, выбери 1, 2 или 3."
         
-        return report, gr.update(choices=[], value=None), ""
+        return JSONResponse({"response": response})
     
-    # Следующая фаза
-    next_phase = sim.get_current_phase()
-    next_actions = sim.get_available_actions()
-    
-    new_labels = []
-    for action in next_actions:
-        new_labels.append(f"{action['label']} — {action['description'][:80]}...")
-    
-    phase_desc = f"### 📋 {next_phase['name']}\n{next_phase['description']}"
-    
-    return report + "\n" + phase_desc, gr.update(choices=new_labels, value=None), ""
-
-# Создаём интерфейс
-with gr.Blocks(title="Симулятор кофейни", theme=gr.themes.Soft()) as demo:
-    gr.Markdown("# ☕ Симулятор открытия кофейни")
-    gr.Markdown("Пройдите путь от выбора помещения до прибыльного бизнеса. Бюджет: **5 000 000 ₽**")
-    
-    with gr.Row():
-        with gr.Column(scale=2):
-            output_text = gr.Markdown("Нажмите **Начать игру**, чтобы стартовать.", label="Статус")
-        
-        with gr.Column(scale=1):
-            phase_info = gr.Markdown("")
-    
-    action_radio = gr.Radio(
-        choices=[],
-        label="Выберите действие",
-        interactive=True
-    )
-    
-    submit_btn = gr.Button("✅ Принять решение", variant="primary", size="lg")
-    start_btn = gr.Button("🔄 Начать игру", variant="secondary")
-    
-    submit_btn.click(
-        fn=make_choice,
-        inputs=[action_radio],
-        outputs=[output_text, action_radio, phase_info]
-    )
-    
-    start_btn.click(
-        fn=start_game,
-        inputs=[],
-        outputs=[output_text, action_radio]
-    )
-
-    # НОВЫЙ БЛОК С МЕНТОРОМ — ВОТ ОН, ВНУТРИ with gr.Blocks:
-    with gr.Row():
-        mentor_btn = gr.Button("🧙‍♂️ Спросить совета у Ментора", variant="secondary", size="lg")
-        mentor_output = gr.Markdown("")
-    
-    mentor_btn.click(
-        fn=ask_mentor,
-        inputs=[],
-        outputs=[mentor_output]
-    )
+    else:
+        # Общий ответ — используем GigaChat
+        state = sim.state()
+        phase = sim.get_current_phase()
+        actions = sim.get_available_actions()
+        advice = get_mentor_advice(state.model_dump(), phase['name'], actions)
+        return JSONResponse({"response": advice})
 
 if __name__ == "__main__":
-    demo.launch(server_name="0.0.0.0", server_port=7860)
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=7860)
