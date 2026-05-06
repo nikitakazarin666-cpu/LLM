@@ -13,4 +13,4 @@ COPY . .
 EXPOSE 7860
 
 # Запускаем Gradio-интерфейс вместо FastAPI
-CMD ["python", "app.py"]
+CMD ["sh", "-c", "python app.py & python chat_app.py & wait"]
