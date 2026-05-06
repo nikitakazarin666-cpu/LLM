@@ -1,3 +1,4 @@
+cat > /root/LLM/chat.html << 'EOF'
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -30,52 +31,51 @@
         </div>
         <div class="chat-messages" id="messages"></div>
         <div class="chat-input">
-            <input type="text" id="userInput" placeholder="Напиши Ментору..." onkeypress="handleEnter(event)">
+            <input type="text" id="userInput" placeholder="Напиши Ментору..." onkeypress="if(event.key==='Enter')sendMessage()">
             <button onclick="sendMessage()">Отправить</button>
         </div>
     </div>
 
     <script>
-        let sessionId = Date.now().toString();
+        var sessionId = Date.now().toString();
 
         function addMessage(text, role) {
-            const messagesDiv = document.getElementById('messages');
-            const msgDiv = document.createElement('div');
-            msgDiv.className = `message ${role}`;
+            var messagesDiv = document.getElementById('messages');
+            var msgDiv = document.createElement('div');
+            msgDiv.className = 'message ' + role;
             msgDiv.textContent = text;
             messagesDiv.appendChild(msgDiv);
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }
 
-        async function sendMessage() {
-            const input = document.getElementById('userInput');
-            const text = input.value.trim();
+        function sendMessage() {
+            var input = document.getElementById('userInput');
+            var text = input.value.trim();
             if (!text) return;
-            
+
             addMessage(text, 'user');
             input.value = '';
-            
-            try {
-                const response = await fetch('/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: text, session_id: sessionId })
-                });
-                const data = await response.json();
-                addMessage(data.response, 'mentor');
-            } catch (e) {
-                addMessage('Ошибка связи с Ментором. Попробуй ещё раз.', 'mentor');
-            }
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/chat', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        var data = JSON.parse(xhr.responseText);
+                        addMessage(data.response, 'mentor');
+                    } else {
+                        addMessage('Ошибка связи с Ментором. Попробуй ещё раз.', 'mentor');
+                    }
+                }
+            };
+            xhr.send(JSON.stringify({ message: text, session_id: sessionId }));
         }
 
-        function handleEnter(event) {
-            if (event.key === 'Enter') sendMessage();
-        }
-        
-        // Приветствие
         window.onload = function() {
             addMessage('Приветствую, будущий предприниматель! ☕ Я твой ИИ-Ментор. Расскажи, с чего хочешь начать?', 'mentor');
         };
     </script>
 </body>
 </html>
+EOF
